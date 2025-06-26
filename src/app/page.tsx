@@ -8,6 +8,8 @@ export default function Home() {
     spell: number | "Original";
     copies: number;
     markerPerCopy: number;
+    strength: number;
+    toughness: number;
     isOriginal?: boolean;
   };
 
@@ -29,10 +31,12 @@ export default function Home() {
       spell: "Original",
       copies: 1,
       markerPerCopy: originalMarkers,
+      strength: 1 + originalMarkers,
+      toughness: 4 + originalMarkers,
       isOriginal: true,
     });
 
-    // Für jeden Spell
+    // Kopien durch Spells
     for (let i = 1; i <= instantsCount; i++) {
       const copies = Math.pow(2, i - 1);
       const baseMarker = instantsCount - i;
@@ -42,6 +46,8 @@ export default function Home() {
         spell: i,
         copies,
         markerPerCopy,
+        strength: 1 + markerPerCopy,
+        toughness: 4 + markerPerCopy,
       });
     }
 
@@ -67,10 +73,10 @@ export default function Home() {
       {/* Inhalt */}
       <div className="relative z-10 flex flex-col items-center justify-center h-screen px-4">
         <div
-          className="rounded-xl p-6 shadow-lg max-w-md w-full text-center flex flex-col max-h-[80vh] overflow-y-auto text-gray-100 drop-shadow-[0_0_2px_black]
+          className="rounded-xl p-6 shadow-lg max-w-md w-full text-center flex flex-col max-h-[80vh] overflow-y-auto  text-gray-100 drop-shadow-[0_0_2px_black]
 "
         >
-          <h1 className="text-2xl font-bold mb-6">Stormspliter-Rechner</h1>
+          <h1 className="text-2xl font-bold mb-6">Stormsplitter-Rechner</h1>
 
           <div className="text-left mb-4 flex items-center space-x-4">
             <div className="flex-1">
@@ -149,11 +155,37 @@ export default function Home() {
                     ➤ {step.isOriginal ? "Anzahl" : "Kopien"}: {step.copies}
                   </p>
                   <p>
-                    ➤ Marker pro {step.isOriginal ? "Kreatur" : "Kopie"}:{" "}
+                    ➤ +1/+1 pro {step.isOriginal ? "Kreatur" : "Kopie"}:{" "}
                     {step.markerPerCopy}
+                  </p>
+                  <p>
+                    ➤ Stärke/Widerstandskraft: {step.strength}/{step.toughness}
+                  </p>
+                  <p>
+                    ➤ Stärke: <strong>{step.strength * step.copies}</strong> |
+                    Widerstandskraft:{" "}
+                    <strong>{step.toughness * step.copies}</strong>
                   </p>
                 </div>
               ))}
+
+              {/* Summenanzeige */}
+              <div className="pt-3 mt-3 border-t border-white/30 font-semibold">
+                <p>
+                  💪🏻 Gesamtkraft:{" "}
+                  {steps.reduce(
+                    (sum, step) => sum + step.strength * step.copies,
+                    0
+                  )}
+                </p>
+                <p>
+                  🛡️ Gesamtwiderstandskraft:{" "}
+                  {steps.reduce(
+                    (sum, step) => sum + step.toughness * step.copies,
+                    0
+                  )}
+                </p>
+              </div>
             </div>
           )}
         </div>
