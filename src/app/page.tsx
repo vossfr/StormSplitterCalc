@@ -84,17 +84,41 @@ export default function Home() {
               <p className="text-lg">
                 Anzahl Instant und Sorceries: <strong>{instantsCount}</strong>
               </p>
-              <input
-                type="range"
-                min="0"
-                max="20"
-                value={instantsCount}
-                onChange={(e) => {
-                  setInstantsValue(Number(e.target.value));
-                  setSteps([]);
-                }}
-                className="w-full"
-              />
+              <div className="flex items-center justify-center space-x-4 mt-4">
+                <button
+                  onClick={() => {
+                    setInstantsValue(Math.max(0, instantsCount - 1));
+                    setSteps([]);
+                  }}
+                  className="px-3 py-1.5 bg-red-400 hover:bg-red-800 text-white rounded-full transition"
+                >
+                  −
+                </button>
+
+                <div className="flex flex-col items-center space-y-1">
+                  <input
+                    type="range"
+                    min="0"
+                    max="20"
+                    value={instantsCount}
+                    onChange={(e) => {
+                      setInstantsValue(Number(e.target.value));
+                      setSteps([]);
+                    }}
+                    className="cursor-pointer w-48 h-2 accent-red-500"
+                  />
+                </div>
+
+                <button
+                  onClick={() => {
+                    setInstantsValue(Math.min(20, instantsCount + 1));
+                    setSteps([]);
+                  }}
+                  className="px-3 py-1.5 bg-red-400 hover:bg-red-800 text-white rounded-full transition"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
 
