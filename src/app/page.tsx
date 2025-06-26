@@ -162,7 +162,7 @@ export default function Home() {
           </button>
 
           {steps.length > 0 && (
-            <div className="mt-6 text-left text-sm space-y-3 bg-white/20 p-4 rounded-md max-h-100 overflow-y-auto">
+            <div className="mt-6 text-left text-sm space-y-3 bg-white/20 p-4 rounded-md max-h-80 overflow-y-auto">
               <h2 className="text-lg font-semibold mb-2">Berechnung:</h2>
               {steps.map((step, idx) => (
                 <div key={idx} className="border-b border-white/20 pb-2">
