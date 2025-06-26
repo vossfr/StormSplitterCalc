@@ -12,11 +12,11 @@ export default function Home() {
     toughness: number;
     isOriginal?: boolean;
   };
-
   const [instantsCount, setInstantsValue] = useState(0); // Anzahl Spells
   const [bonusStrength, setBonusStrength] = useState(0); // Stärke pro Marker
   const [bonusToughness, setBonusToughness] = useState(0); // Widerstandskraft pro Marker
   const [steps, setSteps] = useState<StepData[]>([]);
+  const [totalCreatures, setTotalCreatures] = useState(0);
 
   const handleCalculate = () => {
     if (instantsCount < 0) {
@@ -36,13 +36,11 @@ export default function Home() {
       toughness: 4 + originalMarkers * bonusToughness,
       isOriginal: true,
     });
-
     // Kopien durch Spells
     for (let i = 1; i <= instantsCount; i++) {
       const copies = Math.pow(2, i - 1);
       const baseMarker = instantsCount - i;
       const markerPerCopy = baseMarker;
-
       newSteps.push({
         spell: i,
         copies,
@@ -51,8 +49,11 @@ export default function Home() {
         toughness: 4 + markerPerCopy * bonusToughness,
       });
     }
-
     setSteps(newSteps);
+
+    // Gesamtanzahl aller Kreaturen berechnen
+    const total = newSteps.reduce((sum, step) => sum + step.copies, 0);
+    setTotalCreatures(total);
   };
 
   return (
@@ -195,6 +196,7 @@ export default function Home() {
 
               {/* Summenanzeige */}
               <div className="pt-3 mt-3 border-t border-white/30 font-semibold">
+                <p>🦦 Gesamtanzahl: {totalCreatures}</p>
                 <p>
                   💪🏻 Gesamtkraft:{" "}
                   {steps.reduce(
