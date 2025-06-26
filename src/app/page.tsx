@@ -13,9 +13,9 @@ export default function Home() {
     isOriginal?: boolean;
   };
 
-  const [instantsCount, setInstantsValue] = useState(0); // Anzahl Kreaturen
-  const [hasProwess, setHasProwess] = useState(false);
-  const [prowessCount, setProwessCount] = useState(0);
+  const [instantsCount, setInstantsValue] = useState(0); // Anzahl Spells
+  const [bonusStrength, setBonusStrength] = useState(0); // Stärke pro Marker
+  const [bonusToughness, setBonusToughness] = useState(0); // Widerstandskraft pro Marker
   const [steps, setSteps] = useState<StepData[]>([]);
 
   const handleCalculate = () => {
@@ -23,16 +23,17 @@ export default function Home() {
       setSteps([]);
       return;
     }
+
     const newSteps: StepData[] = [];
 
-    // Originalkreatur
-    const originalMarkers = instantsCount * prowessCount;
+    // Original
+    const originalMarkers = instantsCount;
     newSteps.push({
       spell: "Original",
       copies: 1,
       markerPerCopy: originalMarkers,
-      strength: 1 + originalMarkers,
-      toughness: 4 + originalMarkers,
+      strength: 1 + originalMarkers * bonusStrength,
+      toughness: 4 + originalMarkers * bonusToughness,
       isOriginal: true,
     });
 
@@ -40,14 +41,14 @@ export default function Home() {
     for (let i = 1; i <= instantsCount; i++) {
       const copies = Math.pow(2, i - 1);
       const baseMarker = instantsCount - i;
-      const markerPerCopy = baseMarker * prowessCount;
+      const markerPerCopy = baseMarker;
 
       newSteps.push({
         spell: i,
         copies,
         markerPerCopy,
-        strength: 1 + markerPerCopy,
-        toughness: 4 + markerPerCopy,
+        strength: 1 + markerPerCopy * bonusStrength,
+        toughness: 4 + markerPerCopy * bonusToughness,
       });
     }
 
@@ -71,7 +72,7 @@ export default function Home() {
       </div>
 
       {/* Inhalt */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-screen px-4">
+      <div className="relative z-10 mt-10 flex flex-col items-center h-screen px-4">
         <div
           className="rounded-xl p-6 shadow-lg max-w-md w-full text-center flex flex-col max-h-[80vh] overflow-y-auto  text-gray-100 drop-shadow-[0_0_2px_black]
 "
@@ -88,50 +89,43 @@ export default function Home() {
                 min="0"
                 max="20"
                 value={instantsCount}
-                onChange={(e) => setInstantsValue(Number(e.target.value))}
+                onChange={(e) => {
+                  setInstantsValue(Number(e.target.value));
+                  setSteps([]);
+                }}
                 className="w-full"
               />
             </div>
           </div>
 
-          <label className="inline-flex items-center space-x-2 cursor-pointer mb-4">
-            <p className="text-lg">Prowess </p>
+          <div className="text-left mb-4 flex items-center space-x-4">
+            <p className="text-lg">Power / Toughness je Instant/Sorcery:</p>
             <input
-              type="checkbox"
-              checked={hasProwess}
+              type="number"
+              min={0}
+              max={10}
+              value={bonusStrength}
               onChange={(e) => {
-                const checked = e.target.checked;
-                setHasProwess(checked);
-                if (!checked) {
-                  setProwessCount(0);
-                } else {
-                  setProwessCount(1);
-                }
+                setBonusStrength(Number(e.target.value));
+                setSteps([]);
               }}
-              className="w-5 h-5"
+              className="w-1/8 rounded px-2 py-1 border"
             />
-          </label>
-
-          {hasProwess && (
-            <>
-              <div className="text-left mb-2">
-                <p className="text-lg">
-                  Prowess Instanzen: <strong>{prowessCount}</strong>
-                </p>
-              </div>
-              <div className="text-left mb-4">
-                <input
-                  id="instantsRange"
-                  type="range"
-                  min="1"
-                  max="5"
-                  value={prowessCount}
-                  onChange={(e) => setProwessCount(Number(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-            </>
-          )}
+            <p className="text-lg p-2">
+              <strong>{" / "}</strong>
+            </p>
+            <input
+              type="number"
+              min={0}
+              max={10}
+              value={bonusToughness}
+              onChange={(e) => {
+                setBonusToughness(Number(e.target.value));
+                setSteps([]);
+              }}
+              className="w-1/8 rounded px-2 py-1 border"
+            />
+          </div>
           <button
             onClick={handleCalculate}
             className="relative group mt-auto px-6 py-2 bg-red-400 hover:bg-red-800 rounded-full transition text-white overflow-hidden"
@@ -140,7 +134,7 @@ export default function Home() {
           </button>
 
           {steps.length > 0 && (
-            <div className="mt-6 text-left text-sm space-y-3 bg-white/20 p-4 rounded-md max-h-60 overflow-y-auto">
+            <div className="mt-6 text-left text-sm space-y-3 bg-white/20 p-4 rounded-md max-h-100 overflow-y-auto">
               <h2 className="text-lg font-semibold mb-2">Berechnung:</h2>
               {steps.map((step, idx) => (
                 <div key={idx} className="border-b border-white/20 pb-2">
@@ -155,8 +149,10 @@ export default function Home() {
                     ➤ {step.isOriginal ? "Anzahl" : "Kopien"}: {step.copies}
                   </p>
                   <p>
-                    ➤ +1/+1 pro {step.isOriginal ? "Kreatur" : "Kopie"}:{" "}
-                    {step.markerPerCopy}
+                    ➤ {step.markerPerCopy}
+                    {"x: "} +{bonusStrength} /+{bonusToughness}{" "}
+                    {step.isOriginal ? "" : "pro "}
+                    {step.isOriginal ? "" : "Kopie"}
                   </p>
                   <p>
                     ➤ Stärke/Widerstandskraft: {step.strength}/{step.toughness}
