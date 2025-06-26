@@ -106,6 +106,7 @@ export default function Home() {
               min={0}
               max={10}
               value={bonusStrength}
+              onFocus={(e) => e.target.select()}
               onChange={(e) => {
                 setBonusStrength(Number(e.target.value));
                 setSteps([]);
@@ -121,6 +122,7 @@ export default function Home() {
               min={0}
               max={10}
               value={bonusToughness}
+              onFocus={(e) => e.target.select()}
               onChange={(e) => {
                 setBonusToughness(Number(e.target.value));
                 setSteps([]);
