@@ -102,6 +102,7 @@ export default function Home() {
             <p className="text-lg">Power / Toughness je Instant/Sorcery:</p>
             <input
               type="number"
+              inputMode="numeric"
               min={0}
               max={10}
               value={bonusStrength}
@@ -116,6 +117,7 @@ export default function Home() {
             </p>
             <input
               type="number"
+              inputMode="numeric"
               min={0}
               max={10}
               value={bonusToughness}
