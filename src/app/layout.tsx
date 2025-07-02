@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,35 +20,58 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <head>
+        {/* Favicons */}
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="apple-touch-icon.png"
+          href="/apple-touch-icon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="favicon-32x32.png"
+          href="/favicon-32x32.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="favicon-16x16.png"
+          href="/favicon-16x16.png"
         />
-        <link rel="manifest" href="site.webmanifest"></link>
+        <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
       >
-        {children}
+        {/* Navigation */}
+        <nav className="bg-gray-900 px-4 py-3 shadow-md flex items-center justify-between z-50 fixed top-0 left-0 right-0">
+          <Link
+            href="/"
+            className="text-xl font-bold text-white hover:text-red-300"
+          >
+            🧙 Magic Rechner
+          </Link>
+          <div className="flex space-x-6 text-sm">
+            <Link
+              href="/stormsplitter"
+              className="text-gray-300 hover:text-red-400"
+            >
+              Stormsplitter
+            </Link>
+            <Link href="/bruenor" className="text-gray-300 hover:text-blue-400">
+              Bruenor
+            </Link>
+          </div>
+        </nav>
+
+        {/* Hauptinhalt */}
+        <main className="pt-[56px] min-h-screen">{children}</main>
       </body>
     </html>
   );
