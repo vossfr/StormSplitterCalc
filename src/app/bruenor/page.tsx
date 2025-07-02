@@ -24,10 +24,6 @@ type EquipmentBonus = {
   lostAbilities: string[];
 };
 
-type Error = {
-  status: number;
-  text: string;
-};
 function parseEquipmentText(text: string): EquipmentBonus {
   const grantedAbilities: string[] = [];
   const lostAbilities: string[] = [];
@@ -212,7 +208,11 @@ export default function BruenorPage() {
             <>
               <section className="mb-6">
                 <Image
-                  src={`https://cards.scryfall.io/large/front/${selectedCreature.card.uid[0]}/${selectedCreature.card.uid[1]}/${selectedCreature.card.uid}.jpg`}
+                  src={`https://cards.scryfall.io/large/front/${
+                    selectedCreature.card.uid.toString()[0]
+                  }/${selectedCreature.card.uid.toString()[1]}/${
+                    selectedCreature.card.uid
+                  }.jpg`}
                   alt={selectedCreature.card.oracleCard.name}
                   width={300}
                   height={400}
