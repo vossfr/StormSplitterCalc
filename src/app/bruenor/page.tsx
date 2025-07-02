@@ -23,6 +23,11 @@ type EquipmentBonus = {
   grantedAbilities: string[];
   lostAbilities: string[];
 };
+
+type Error = {
+  status: number;
+  text: string;
+};
 function parseEquipmentText(text: string): EquipmentBonus {
   const grantedAbilities: string[] = [];
   const lostAbilities: string[] = [];
@@ -93,8 +98,9 @@ export default function BruenorPage() {
         if (!res.ok) throw new Error("Fehler beim Laden des Decks");
         const data = await res.json();
         setCards(data.cards);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
-        setError(e.message || "Unbekannter Fehler");
+        setError(e || "Status unbekannt");
       } finally {
         setLoading(false);
       }
