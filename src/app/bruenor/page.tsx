@@ -72,8 +72,6 @@ function parseEquipmentText(text: string): EquipmentBonus {
 }
 
 export default function BruenorPage() {
-  const deckId = "10221904";
-
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -84,19 +82,19 @@ export default function BruenorPage() {
   );
   const [useBruenorEffect, setUseBruenorEffect] = useState(false);
 
-  // Fetch deck on mount
+  // ✅ Fetch deck on mount via API Route
   useEffect(() => {
     async function fetchDeck() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`https://archidekt.com/api/decks/${deckId}/`);
+        const res = await fetch(`/api/deck`);
         if (!res.ok) throw new Error("Fehler beim Laden des Decks");
         const data = await res.json();
         setCards(data.cards);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
-        setError(e || "Status unbekannt");
+        setError(e?.message || "Unbekannter Fehler");
       } finally {
         setLoading(false);
       }
