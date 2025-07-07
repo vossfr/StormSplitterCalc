@@ -260,6 +260,45 @@ export default function BruenorPage() {
                   </p>
                 )}
               </section>
+              {selectedEquipments.size > 0 && (
+                <section className="mb-6">
+                  <h3 className="font-semibold mb-2">
+                    Ausgewählte Equipments:
+                  </h3>
+                  <div className="flex flex-wrap gap-4">
+                    {[...selectedEquipments].map((name) => {
+                      const eqCard = equipments.find(
+                        (eq) => eq.card.oracleCard.name === name
+                      );
+                      if (!eqCard) return null;
+
+                      const uid = eqCard.card.uid.toString();
+                      const imagePath = `https://cards.scryfall.io/large/front/${uid[0]}/${uid[1]}/${uid}.jpg`;
+
+                      return (
+                        <div
+                          key={name}
+                          className="relative group w-[100px] h-[133px] sm:w-[300px] sm:h-[400px] overflow-visible cursor-pointer"
+                        >
+                          <Image
+                            src={imagePath}
+                            alt={name}
+                            width={300}
+                            height={400}
+                            className="rounded shadow-md absolute top-0 left-0 transition-transform duration-200 scale-[0.33] sm:scale-[0.4] group-hover:scale-100 z-10"
+                            style={{
+                              transformOrigin: "top left",
+                            }}
+                          />
+                          <div className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 text-xs bg-black bg-opacity-70 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap">
+                            {name}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
 
               <section className="bg-gray-800 p-4 rounded max-w-sm">
                 <h2 className="text-xl font-semibold mb-2">Berechnung:</h2>
