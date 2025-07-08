@@ -50,7 +50,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
       >
         {/* Navigation */}
-        <nav className="bg-gray-900 px-4 py-3 shadow-md flex items-center justify-between z-50 fixed top-0 left-0 right-0">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900 px-4 py-3 shadow-md flex items-center justify-between">
           <Link
             href="/"
             className="text-xl font-bold text-white hover:text-red-300"
@@ -71,7 +71,7 @@ export default function RootLayout({
         </nav>
 
         {/* Hauptinhalt */}
-        <main className="pt-[56px] min-h-screen">{children}</main>
+        <main className="pt-[54x] min-h-screen">{children}</main>
       </body>
     </html>
   );

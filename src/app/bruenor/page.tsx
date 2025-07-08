@@ -161,7 +161,7 @@ export default function BruenorPage() {
     });
   }
   return (
-    <main className="flex flex-col items-center justify-start bg-gray-950 text-white min-h-screen p-6 md:p-10 space-y-10">
+    <main className="flex flex-col items-center justify-start bg-gray-950 pt-[60px] text-white min-h-screen space-y-10">
       <h1 className="text-4xl font-bold tracking-tight text-center">
         ⚔️ Bruenor Equipment Calculator
       </h1>

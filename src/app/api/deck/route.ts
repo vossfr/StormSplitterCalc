@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 
 // Stelle sicher, dass du die Umgebungsvariable liest
 const DECK_ID = process.env.DECK_ID;
-console.log(DECK_ID);
 export async function GET() {
   if (!DECK_ID) {
     return NextResponse.json(
