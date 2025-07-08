@@ -72,6 +72,7 @@ function parseEquipmentText(text: string): EquipmentBonus {
 }
 
 export default function BruenorPage() {
+  const [showDetails, setShowDetails] = useState(false);
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +83,7 @@ export default function BruenorPage() {
   );
   const [useBruenorEffect, setUseBruenorEffect] = useState(false);
 
-  // ✅ Fetch deck on mount via API Route
+  // Fetch deck on mount via API Route
   useEffect(() => {
     async function fetchDeck() {
       setLoading(true);
@@ -147,10 +148,9 @@ export default function BruenorPage() {
 
   // Bruenor Effekt: +2 Power pro Ausrüstung, wenn aktiviert
   const bruenorBonus = useBruenorEffect ? selectedEquipments.size * 2 : 0;
-
   const totalPower = basePower + totalEquipmentPowerBonus + bruenorBonus;
   const totalToughness = baseToughness + totalEquipmentToughnessBonus;
-  console.log(selectedCreature);
+
   // Handler Equipment Checkbox Toggle
   function toggleEquipment(name: string) {
     setSelectedEquipments((prev) => {
@@ -161,30 +161,33 @@ export default function BruenorPage() {
     });
   }
   return (
-    <main className=" bg-gray-900 text-white p-6  relative w-full min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Bruenor Equipment Calculator</h1>
+    <main className="flex flex-col items-center justify-start bg-gray-950 text-white min-h-screen p-6 md:p-10 space-y-10">
+      <h1 className="text-4xl font-bold tracking-tight text-center">
+        ⚔️ Bruenor Equipment Calculator
+      </h1>
 
-      {loading && <p>Lade Deck...</p>}
-      {error && <p className="text-red-500">Fehler: {error}</p>}
+      {loading && <p className="text-gray-300 text-lg">Lade Deck...</p>}
+      {error && <p className="text-red-500 font-semibold">Fehler: {error}</p>}
 
       {!loading && !error && (
-        <>
-          <section className="mb-6">
+        <div className="w-full max-w-5xl space-y-10">
+          {/* --- Kreatur auswählen --- */}
+          <section className="bg-gray-900 p-6 rounded-lg shadow-lg">
             <label
               htmlFor="creatureSelect"
-              className="block mb-2 font-semibold"
+              className="block mb-2 text-lg font-semibold"
             >
-              Kreatur auswählen:
+              🧙‍♂️ Kreatur auswählen:
             </label>
             <select
               id="creatureSelect"
-              className="bg-gray-800 p-2 rounded w-full max-w-sm"
+              className="bg-gray-800 border border-gray-700 p-3 rounded w-full text-white"
               onChange={(e) => {
                 const c = creatures.find(
                   (card) => card.card.oracleCard.name === e.target.value
                 );
                 setSelectedCreature(c || null);
-                setSelectedEquipments(new Set()); // Reset Equipment bei Kreaturwechsel
+                setSelectedEquipments(new Set());
                 setUseBruenorEffect(false);
               }}
               value={selectedCreature?.card.oracleCard.name || ""}
@@ -204,68 +207,96 @@ export default function BruenorPage() {
 
           {selectedCreature && (
             <>
-              <section className="mb-6">
-                <Image
-                  src={`https://cards.scryfall.io/large/front/${
-                    selectedCreature.card.uid.toString()[0]
-                  }/${selectedCreature.card.uid.toString()[1]}/${
-                    selectedCreature.card.uid
-                  }.jpg`}
-                  alt={selectedCreature.card.oracleCard.name}
-                  width={300}
-                  height={400}
-                  style={{
-                    borderRadius: "8px",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-                  }}
-                />
-                <p className="font-semibold mb-2">Equipments auswählen:</p>
-                <div className="max-h-48 overflow-y-auto bg-gray-800 p-3 rounded space-y-2 max-w-sm">
-                  {equipments.map((eq) => {
-                    const name = eq.card.oracleCard.name;
-                    return (
-                      <label key={name} className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedEquipments.has(name)}
-                          onChange={() => toggleEquipment(name)}
-                          className="cursor-pointer"
-                        />
-                        <span>{name}</span>
-                      </label>
-                    );
-                  })}
-                  {equipments.length === 0 && (
-                    <p className="text-gray-400">Keine Ausrüstungen im Deck.</p>
-                  )}
+              {/* --- Bild der Kreatur + Equipment-Auswahl --- */}
+              <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="flex flex-col items-center justify-center">
+                  <Image
+                    src={`https://cards.scryfall.io/large/front/${
+                      selectedCreature.card.uid.toString()[0]
+                    }/${selectedCreature.card.uid.toString()[1]}/${
+                      selectedCreature.card.uid
+                    }.jpg`}
+                    alt={selectedCreature.card.oracleCard.name}
+                    width={300}
+                    height={420}
+                    className="rounded-lg shadow-lg"
+                  />
+                </div>
+
+                <div>
+                  <p className="font-semibold text-lg mb-3">
+                    🛡️ Equipments auswählen:
+                  </p>
+                  <div className="max-h-100 overflow-y-auto bg-gray-800 p-4 rounded space-y-2 border border-gray-700">
+                    {equipments.length > 0 ? (
+                      equipments.map((eq) => {
+                        const name = eq.card.oracleCard.name;
+                        return (
+                          <label
+                            key={name}
+                            className="flex items-center space-x-2 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedEquipments.has(name)}
+                              onChange={() => toggleEquipment(name)}
+                              className="form-checkbox h-5 w-5 text-blue-500"
+                            />
+                            <span>{name}</span>
+                          </label>
+                        );
+                      })
+                    ) : (
+                      <p className="text-gray-400">
+                        Keine Ausrüstungen im Deck.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </section>
 
-              <section className="mb-6">
-                <label className="inline-flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={useBruenorEffect}
-                    onChange={() => setUseBruenorEffect((v) => !v)}
-                    disabled={selectedEquipments.size === 0}
-                    className="cursor-pointer"
-                  />
-                  <span>
-                    Bruenor-Effekt aktivieren (+2 Power pro Ausrüstung)
+              {/* --- Bruenor Effekt als Switch --- */}
+              <section className="bg-gray-900 p-4 rounded-lg shadow-lg flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <span className="text-lg text-white">
+                    💪 Bruenor-Effekt ( +2 Power / Ausrüstung )
                   </span>
-                </label>
-                {selectedEquipments.size === 0 && (
-                  <p className="text-gray-400 text-sm mt-1">
-                    Aktiviere zuerst Ausrüstungen.
-                  </p>
-                )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setUseBruenorEffect(!useBruenorEffect)}
+                  disabled={selectedEquipments.size === 0}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500
+      ${useBruenorEffect ? "bg-orange-500" : "bg-gray-600"}
+      ${
+        selectedEquipments.size === 0
+          ? "opacity-40 cursor-not-allowed"
+          : "cursor-pointer"
+      }
+    `}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform   ${
+                      useBruenorEffect ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
               </section>
+
+              {selectedEquipments.size === 0 && (
+                <p className="text-gray-400 text-sm mt-2">
+                  Bitte zuerst Ausrüstungen auswählen
+                </p>
+              )}
+
+              {/* --- Ausgewählte Equipments mit Bildern --- */}
               {selectedEquipments.size > 0 && (
-                <section className="mb-6">
-                  <h3 className="font-semibold mb-2">
-                    Ausgewählte Equipments:
-                  </h3>
-                  <div className="flex flex-wrap gap-4">
+                <section className="bg-gray-900 p-6 rounded-lg shadow-lg">
+                  <h2 className="text-xl font-semibold mb-4">
+                    🎒 Ausgewählte Equipments
+                  </h2>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {[...selectedEquipments].map((name) => {
                       const eqCard = equipments.find(
                         (eq) => eq.card.oracleCard.name === name
@@ -276,23 +307,15 @@ export default function BruenorPage() {
                       const imagePath = `https://cards.scryfall.io/large/front/${uid[0]}/${uid[1]}/${uid}.jpg`;
 
                       return (
-                        <div
-                          key={name}
-                          className="relative group w-[100px] h-[133px] sm:w-[300px] sm:h-[400px] overflow-visible cursor-pointer"
-                        >
+                        <div key={name} className="relative group">
                           <Image
                             src={imagePath}
                             alt={name}
-                            width={300}
-                            height={400}
-                            className="rounded shadow-md absolute top-0 left-0 transition-transform duration-200 scale-[0.33] sm:scale-[0.4] group-hover:scale-100 z-10"
-                            style={{
-                              transformOrigin: "top left",
-                            }}
+                            width={150}
+                            height={220}
+                            className="rounded shadow-md transition-transform duration-300 group-hover:scale-105"
                           />
-                          <div className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 text-xs bg-black bg-opacity-70 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap">
-                            {name}
-                          </div>
+                          <p className="mt-2 text-sm text-center">{name}</p>
                         </div>
                       );
                     })}
@@ -300,40 +323,67 @@ export default function BruenorPage() {
                 </section>
               )}
 
-              <section className="bg-gray-800 p-4 rounded max-w-sm">
-                <h2 className="text-xl font-semibold mb-2">Berechnung:</h2>
-                <p>
-                  Basis Power/Toughness: {basePower} / {baseToughness}
+              {/* --- Gesamtergebnis --- */}
+              <section className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+                <h3 className="text-2xl font-bold mb-2">📊 Ergebnis</h3>
+                <p className="text-xl">
+                  {selectedCreature.card.oracleCard.name}:{" "}
+                  <span className="font-mono">
+                    {totalPower}/{totalToughness}
+                  </span>
                 </p>
-                <p>+ Equipment Power Bonus: {totalEquipmentPowerBonus}</p>
-                <p>
-                  + Equipment Toughness Bonus: {totalEquipmentToughnessBonus}
-                </p>
-                {useBruenorEffect && (
-                  <p>
-                    + Bruenor Bonus: {bruenorBonus} (2 Power pro Ausrüstung)
+                {allGrantedAbilities.size > 0 && (
+                  <p className="mt-2 text-green-400 text-sm">
+                    + Fähigkeiten: {[...allGrantedAbilities].join(", ")}
                   </p>
                 )}
-                <hr className="my-2 border-gray-600" />
-                <p className="font-bold text-lg">
-                  Gesamt Power / Toughness: {totalPower} / {totalToughness}
-                </p>
-                <p>
-                  <strong>Granted Abilities:</strong>{" "}
-                  {allGrantedAbilities.size > 0
-                    ? Array.from(allGrantedAbilities).join(", ")
-                    : "Keine"}
-                </p>
-                <p>
-                  <strong>Lost Abilities:</strong>{" "}
-                  {allLostAbilities.size > 0
-                    ? Array.from(allLostAbilities).join(", ")
-                    : "Keine"}
-                </p>
+                {allLostAbilities.size > 0 && (
+                  <p className="mt-1 text-red-400 text-sm">
+                    – Verlorene Fähigkeiten: {[...allLostAbilities].join(", ")}
+                  </p>
+                )}
+                <button
+                  className="mt-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-sm"
+                  onClick={() => setShowDetails(!showDetails)}
+                >
+                  {showDetails ? "Details verstecken" : "Details anzeigen"}
+                </button>
+                {showDetails && (
+                  <div className="mt-4 text-left text-sm bg-gray-900 p-4 rounded">
+                    <p>
+                      <strong>Basiswerte:</strong>{" "}
+                      <span className="font-mono">
+                        {basePower} / {baseToughness}
+                      </span>
+                    </p>
+
+                    <p>
+                      <strong>Bonus durch Ausrüstungen:</strong>{" "}
+                      <span className="font-mono">
+                        +{totalEquipmentPowerBonus} / +
+                        {totalEquipmentToughnessBonus}
+                      </span>
+                    </p>
+
+                    <p>
+                      <strong>Bonus durch Bruenor:</strong>{" "}
+                      <span className="font-mono">+{bruenorBonus} / +0</span>
+                    </p>
+
+                    <hr className="my-3 border-gray-600" />
+
+                    <p>
+                      <strong>Gesamtergebnis:</strong>{" "}
+                      <span className="font-mono">
+                        {totalPower} / {totalToughness}
+                      </span>
+                    </p>
+                  </div>
+                )}
               </section>
             </>
           )}
-        </>
+        </div>
       )}
     </main>
   );
