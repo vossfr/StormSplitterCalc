@@ -71,11 +71,11 @@ export default function Stormsplitter() {
       </div>
 
       {/* Inhalt */}
-      <div className="z-10 flex flex-col items-center max-w-5xl w-full space-y-10">
+      <div className="z-10 flex flex-col items-center w-full space-y-10">
         <h1 className="text-4xl font-bold tracking-tight text-center space-y-10 ">
           🎲 Stormsplitter Calculator
         </h1>
-        <div className="bg-gray-900 bg-opacity-90 rounded-xl p-8 shadow-lg max-w-md w-full text-gray-100 drop-shadow-lg max-h-[80vh] space-y-10">
+        <div className="bg-gray-900 bg-opacity-10 rounded-xl p-8 shadow-lg max-w-md w-full text-gray-100 drop-shadow-lg  space-y-10">
           {/* Anzahl Instants */}
 
           <div className="mb-6">
